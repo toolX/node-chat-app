@@ -39,7 +39,7 @@ form.addEventListener('submit', function (e) {
     from: 'User',
     text: field.value
   }, function () {
-
+    field.value = '';
   });
 });
 
@@ -48,12 +48,19 @@ locationButton.addEventListener('click', function () {
     return alert('Geolocation not supported in your browser.');
   }
 
+  locationButton.setAttribute('disabled', 'disabled');
+  locationButton.innerText = 'Sending location...';
+
   navigator.geolocation.getCurrentPosition(function (position) {
+    locationButton.removeAttribute('disabled');
+    locationButton.innerText = 'Send location';
     socket.emit('createLocationMessage', {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude
     });
   }, function () {
+    locationButton.removeAttribute('disabled');
+    locationButton.innerText = 'Send location';
     alert('Unable to fetch location.');
   });
 });
