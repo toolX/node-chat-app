@@ -13,23 +13,30 @@ socket.on('disconnect', function () {
 });
 
 socket.on('newMessage', function (message) {
-  var formattedTime = moment(message.createdAt).format('h:mm a');
-
   var li = document.createElement('li');
-  li.innerText = `${message.from} ${formattedTime}: ${message.text}`;
+  var formattedTime = moment(message.createdAt).format('h:mm a');
+  var template = document.querySelector('#message-template').innerHTML;
+  var html = Mustache.render(template, {
+    text: message.text,
+    from: message.from,
+    createdAt: formattedTime
+  });
+  li.classList.add('message');
+  li.innerHTML = html;
   list.appendChild(li);
 });
 
 socket.on('newLocationMessage', function (message) {
   var formattedTime = moment(message.createdAt).format('h:mm a');
   var li = document.createElement('li');
-  var link = document.createElement('a');
-  li.innerText = `${message.from} ${formattedTime}: `
-  link.setAttribute('href', message.url);
-  link.setAttribute('target', '_blank');
-  link.innerText = 'My current location';
-  list.appendChild(li);
-  li.appendChild(link);
+  var template = document.querySelector('#location-message-template').innerHTML;
+  var html = Mustache.render(template, {
+    url: message.url,
+    from: message.from,
+    createdAt: formattedTime
+  });
+  li.classList.add('message');
+  li.innerHTML = html;
   list.appendChild(li);
 });
 
