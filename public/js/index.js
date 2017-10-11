@@ -4,6 +4,19 @@ var field = form.querySelector('input');
 var list = document.querySelector('#messages');
 var locationButton = document.querySelector('#send-location');
 
+var scrollToBottom = function () {
+  var newMessage = list.lastChild;
+  var clientHeight = list.clientHeight;
+  var scrollTop = list.scrollTop;
+  var scrollHeight = list.scrollHeight;
+  var newMessageHeight = newMessage.offsetHeight;
+  var lastMessageHeight = newMessage.previousSibling ? newMessage.previousSibling.offsetHeight : 0;
+
+  if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+    messages.scrollTop = scrollHeight;
+  }
+};
+
 socket.on('connect', function () {
   console.log('Connected to server');
 });
@@ -21,9 +34,12 @@ socket.on('newMessage', function (message) {
     from: message.from,
     createdAt: formattedTime
   });
+
   li.classList.add('message');
   li.innerHTML = html;
   list.appendChild(li);
+
+  scrollToBottom();
 });
 
 socket.on('newLocationMessage', function (message) {
@@ -35,9 +51,11 @@ socket.on('newLocationMessage', function (message) {
     from: message.from,
     createdAt: formattedTime
   });
+
   li.classList.add('message');
   li.innerHTML = html;
   list.appendChild(li);
+  scrollToBottom();
 });
 
 form.addEventListener('submit', function (e) {
