@@ -85,7 +85,6 @@ form.addEventListener('submit', function (e) {
   e.preventDefault();
 
   socket.emit('createMessage', {
-    from: 'User',
     text: field.value
   }, function () {
     field.value = '';
